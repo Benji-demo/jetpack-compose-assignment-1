@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -109,7 +110,7 @@ fun MyApp() {
                 .fillMaxSize()
         ) {
             items(courses.size) { index ->
-                Greeting(course = courses[index])
+                ListCourse(course = courses[index])
             }
         }
     }
@@ -118,7 +119,7 @@ fun MyApp() {
 }
 
 @Composable
-fun Greeting(course: Course, modifier: Modifier = Modifier) {
+fun ListCourse(course: Course, modifier: Modifier = Modifier) {
     var expanded by remember{ mutableStateOf(false) }
 
     Column(modifier = Modifier
@@ -177,33 +178,43 @@ fun Greeting(course: Course, modifier: Modifier = Modifier) {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             ) {
-            Column(modifier.background(color = MaterialTheme.colorScheme.background)){
+            Column(modifier
+                .background(color = MaterialTheme.colorScheme.background)
+                .animateContentSize()){
                 Text("Code: ${course.code}", style = MaterialTheme.typography.bodyMedium)
                 Text("Credits: ${course.creditHours}", style = MaterialTheme.typography.bodyMedium)
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                    // we can add duration like animationSpec = tween(durationMillis = 250)
-                ) {
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp))
+//                AnimatedVisibility(
+//                    visible = expanded,
+//                    enter = fadeIn() + expandVertically(),
+//                    exit = fadeOut() + shrinkVertically()
+//                    // we can add duration like animationSpec = tween(durationMillis = 250)
+//                )
+                if (expanded) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                    )
                     {
                         Spacer(modifier.padding(4.dp))
                         Text(
                             "Prerequisites: ${course.prerequisites}",
-                            style = MaterialTheme.typography.bodyMedium)
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                         Spacer(modifier.padding(4.dp))
 
-                        Text("Description",
+                        Text(
+                            "Description",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(course.description,
-                            style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            course.description,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
+
             }
         }
         }
